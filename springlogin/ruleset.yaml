@@ -1,0 +1,2 @@
+name: spring-security-core-removals
+description: Covers breaking Spring Security changes from Spring Boot 2 to 3
