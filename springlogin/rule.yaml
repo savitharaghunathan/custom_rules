@@ -1,0 +1,47 @@
+- ruleID: spring-security-remove-websecurityconfigureradapter-00001
+  description: WebSecurityConfigurerAdapter is removed in Spring Security 6 / Spring Boot 3.
+  category: mandatory
+  effort: 3
+  labels:
+    - konveyor.io/source=spring-boot2
+    - konveyor.io/target=spring-boot3+
+  message: |
+    WebSecurityConfigurerAdapter has been removed in Spring Security 6.
+    Replace it with a component-based security configuration using SecurityFilterChain and UserDetailsService beans.
+  when:
+    java.referenced:
+      location: INHERITANCE
+      pattern: org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
+  links:
+    - title: Spring Security Without the WebSecurityConfigurerAdapter
+      url: https://spring.io/blog/2022/02/21/spring-security-without-the-websecurityconfigureradapter
+
+- ruleID: spring-security-remove-authenticationmanagerbuilder-00002
+  description: Use of configure(AuthenticationManagerBuilder) is no longer recommended.
+  category: mandatory
+  effort: 2
+  labels:
+    - konveyor.io/source=spring-boot2
+    - konveyor.io/target=spring-boot3+
+  message: |
+    The configure(AuthenticationManagerBuilder) method is no longer used in Spring Security 6.
+    Use a UserDetailsService bean for defining in-memory or external authentication providers.
+  when:
+    java.referenced:
+      location: METHOD
+      pattern: configure(org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder) void
+
+- ruleID: spring-security-remove-httpsecurity-configure-00003
+  description: Use of configure(HttpSecurity) method must be replaced with a SecurityFilterChain bean.
+  category: mandatory
+  effort: 2
+  labels:
+    - konveyor.io/source=spring-boot2
+    - konveyor.io/target=spring-boot3+
+  message: |
+    The configure(HttpSecurity) method is no longer used in Spring Security 6.
+    Replace it with a SecurityFilterChain bean that configures security declaratively.
+  when:
+    java.referenced:
+      location: METHOD
+      pattern: configure(org.springframework.security.config.annotation.web.builders.HttpSecurity) void
