@@ -1,0 +1,77 @@
+- ruleID: spring-security-remove-websecurityconfigureradapter-00001
+  description: WebSecurityConfigurerAdapter is deprecated as of Spring Security 5.7
+  category: mandatory
+  effort: 3
+  labels:
+    - konveyor.io/source=spring-boot2
+    - konveyor.io/target=spring-boot3+
+  message: |
+    `WebSecurityConfigurerAdapter` is ** deprecated** in Spring Security 5.7
+    Use component-based configuration with `SecurityFilterChain` and `UserDetailsService`.
+  when:
+    java.referenced:
+      location: INHERITANCE
+      pattern: org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
+  links:
+    - title: Spring Blog - Security without WebSecurityConfigurerAdapter
+      url: https://spring.io/blog/2022/02/21/spring-security-without-the-websecurityconfigureradapter
+    - title: Spring Security 5.7.0-M2 Release Notes
+      url: https://github.com/spring-projects/spring-security/releases/tag/5.7.0-M2
+
+- ruleID: spring-security-replace-authenticationmanagerbuilder-00002
+  description: configure(AuthenticationManagerBuilder) override is discouraged since Spring Security 5.7.
+  category: mandatory
+  effort: 2
+  labels:
+    - konveyor.io/source=spring-boot2
+    - konveyor.io/target=spring-boot3+
+  message: |
+    Overriding `configure(AuthenticationManagerBuilder)` is **discouraged** in Spring Security 5.7.
+    Instead, define a `UserDetailsService` and `PasswordEncoder` bean.
+
+    **Fix:**
+    ```java
+    @Bean
+    public UserDetailsService userDetailsService(PasswordEncoder encoder) {
+        return new InMemoryUserDetailsManager(
+            User.withUsername("user")
+                .password(encoder.encode("pass"))
+                .roles("USER")
+                .build()
+        );
+    }
+    ```
+  when:
+    java.referenced:
+      location: METHOD
+      pattern: configure(org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder) *
+  links:
+    - title: Spring Blog - Security without WebSecurityConfigurerAdapter
+      url: https://spring.io/blog/2022/02/21/spring-security-without-the-websecurityconfigureradapter
+
+- ruleID: spring-security-replace-httpsecurity-configure-00003
+  description: configure(HttpSecurity) override is discouraged since Spring Security 5.7
+  category: mandatory
+  effort: 2
+  labels:
+    - konveyor.io/source=spring-boot2
+    - konveyor.io/target=spring-boot3+
+  message: |
+    Overriding `configure(HttpSecurity)` is **discouraged** in Spring Security 5.7
+    Define a `SecurityFilterChain` bean instead for declarative configuration.
+
+    **Fix:**
+    ```java
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests(authz -> authz.anyRequest().permitAll());
+        return http.build();
+    }
+    ```
+  when:
+    java.referenced:
+      location: METHOD
+      pattern: configure(org.springframework.security.config.annotation.web.builders.HttpSecurity) *
+  links:
+    - title: Spring Blog - Security without WebSecurityConfigurerAdapter
+      url: https://spring.io/blog/2022/02/21/spring-security-without-the-websecurityconfigureradapter
